@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -24,6 +25,12 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    @Operation(
+       summary = "Serviço responsável por salvar um cliente no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
+       )
+
+
     @PostMapping
     public ResponseEntity<Cliente> save(@RequestBody ClienteRequest request) {
 
@@ -31,15 +38,30 @@ public class ClienteController {
         return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
     }
 
+    @Operation(
+        summary = "Serviço responsável por listar os clientes.",
+        description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
+        )
+
     @GetMapping
     public List<Cliente> listarTodos() {
         return clienteService.listarTodos();
     }
 
+    @Operation(
+        summary = "Serviço responsável por listar os clientes."
+        )
+
+
     @GetMapping("/{id}")
     public Cliente obterPorID(@PathVariable Long id) {
         return clienteService.obterPorID(id);
     }
+
+    @Operation(
+        summary = "Serviço responsável por alterar as informações dos clientes."
+        )
+
 
      @PutMapping("/{id}")
     public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
@@ -47,6 +69,12 @@ public class ClienteController {
     clienteService.update(id, request.build());
     return ResponseEntity.ok().build();
  }
+
+    @Operation(
+        summary = "Serviço responsável por deletar os dados do cliente.",
+        description = "Exemplo de descrição de um endpoint responsável por excluir um cliente."
+        )
+
 
     @DeleteMapping("/{id}")
    public ResponseEntity<Void> delete(@PathVariable Long id) {

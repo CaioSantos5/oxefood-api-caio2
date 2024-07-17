@@ -1,5 +1,6 @@
-package br.com.ifpe.oxefood.modelo.produto;
+package br.com.ifpe.oxefood.modelo.fabricante;
 
+import java.time.LocalDate;
 import org.hibernate.annotations.SQLRestriction;
 import br.com.ifpe.oxefood.util.entity.EntidadeAuditavel;
 import jakarta.persistence.Column;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Produto")
+@Table(name = "Fabricante")
 @SQLRestriction("habilitado = true")
 @Builder
 @Getter
@@ -20,24 +21,25 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Produto extends EntidadeAuditavel  {
+public class Fabricante extends EntidadeAuditavel  {
   
   @Column
-   private String codigo;
+   private String nome;
 
    @Column
-   private String titulo;
+   private String endereco;
 
    @Column
-   private String descricao;
+   private Double valorMercado;
 
    @Column
-   private Double valorUnitario;
+   private String paginaWeb;
 
    @Column
-   private Integer tempoEntregaMinimo;
+   private Integer qtdFuncionarios;
 
    @Column
-   private Integer tempoEntregaMaximo; 
+   private LocalDate inicioContrato;
+
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ifpe.oxefood.modelo.produto.Produto;
 import br.com.ifpe.oxefood.modelo.produto.ProdutoService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/api/produto")
@@ -27,12 +28,22 @@ public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
 
+        @Operation(
+       summary = "Serviço responsável por salvar um produto no sistema.",
+       description = "Exemplo de descrição de um endpoint responsável por inserir um produto no sistema."
+       )
+
     @PostMapping
     public ResponseEntity<Produto> save(@RequestBody ProdutoRequest request) {
 
         Produto produto = produtoService.save(request.build());
         return new ResponseEntity<Produto>(produto, HttpStatus.CREATED);
     }
+
+    @Operation(
+        summary = "Serviço responsável por listar os produtos.",
+        description = "Exemplo de descrição de um endpoint responsável por listar os produtos no sistema."
+        )
 
     @GetMapping
     public List<Produto> listarTodos() {
@@ -44,12 +55,22 @@ public class ProdutoController {
         return produtoService.obterPorID(id);
     }
 
+    @Operation(
+        summary = "Serviço responsável por alterar as informações do produto."
+        )
+
     @PutMapping("/{id}")
     public ResponseEntity<Produto> update(@PathVariable("id") Long id, @RequestBody ProdutoRequest request) {
 
     produtoService.update(id, request.build());
     return ResponseEntity.ok().build();
  }
+
+    
+ @Operation(
+    summary = "Serviço responsável por deletar os dados do produto.",
+    description = "Exemplo de descrição de um endpoint responsável por excluir um produto."
+    )
 
       @DeleteMapping("/{id}")
    public ResponseEntity<Void> delete(@PathVariable Long id) {
