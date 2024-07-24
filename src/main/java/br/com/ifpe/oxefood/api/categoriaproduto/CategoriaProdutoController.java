@@ -21,7 +21,7 @@ import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
-@RequestMapping("/api/CategoriaProduto")
+@RequestMapping("/api/categoriaProduto")
 @CrossOrigin
 
 public class CategoriaProdutoController {
@@ -29,10 +29,7 @@ public class CategoriaProdutoController {
     @Autowired
     private CategoriaProdutoService categoriaProdutoService;
 
-    @Operation(
-       summary = "Serviço responsável por salvar um cliente no sistema.",
-       description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
-       )
+
 
 
     @PostMapping
@@ -42,19 +39,14 @@ public class CategoriaProdutoController {
         return new ResponseEntity<CategoriaProduto>(categoriaProduto, HttpStatus.CREATED);
     }
 
-    @Operation(
-        summary = "Serviço responsável por listar os clientes.",
-        description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
-        )
+ 
 
     @GetMapping
     public List<CategoriaProduto> listarTodos() {
         return categoriaProdutoService.listarTodos();
     }
 
-    @Operation(
-        summary = "Serviço responsável por listar os clientes."
-        )
+  
 
 
     @GetMapping("/{id}")
@@ -62,9 +54,7 @@ public class CategoriaProdutoController {
         return categoriaProdutoService.obterPorID(id);
     }
 
-    @Operation(
-        summary = "Serviço responsável por alterar as informações dos clientes."
-        )
+
 
 
      @PutMapping("/{id}")
@@ -74,10 +64,7 @@ public class CategoriaProdutoController {
     return ResponseEntity.ok().build();
  }
 
-    @Operation(
-        summary = "Serviço responsável por deletar os dados do cliente.",
-        description = "Exemplo de descrição de um endpoint responsável por excluir um cliente."
-        )
+    
 
 
     @DeleteMapping("/{id}")
