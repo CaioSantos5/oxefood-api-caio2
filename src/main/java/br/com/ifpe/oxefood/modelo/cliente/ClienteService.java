@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.modelo.produto.Produto;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -114,6 +115,30 @@ public class ClienteService {
         cliente.getEnderecos().remove(endereco);
         cliente.setVersao(cliente.getVersao() + 1);
         repository.save(cliente);
+    }
+
+    public List<Cliente> filtrar(String cpf, String nome) {
+
+       List<Cliente> listaClientes = repository.findAll();
+
+       if ((cpf != null && !"".equals(cpf)) &&
+           (nome == null || "".equals(nome)))
+           {
+            listaClientes = repository.consultarPorCpf(cpf);
+       } else if (
+           (cpf == null || "".equals(cpf)) &&
+           (nome != null && !"".equals(nome)))
+           {    
+            listaClientes = repository.consultarPorNome(nome);
+       } else if (
+           (cpf != null && !"".equals(cpf)) &&
+           (nome != null && !"".equals(nome)))
+           {
+            listaClientes = repository.consultarPorNomeECpf(nome, cpf); 
+       }
+
+       return listaClientes;
+ 
     }
 
 }
