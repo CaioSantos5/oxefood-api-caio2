@@ -3,11 +3,15 @@ package br.com.ifpe.oxefood.modelo.cliente;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ifpe.oxefood.modelo.produto.Produto;
+import br.com.ifpe.oxefood.util.exception.EntidadeNaoEncontradaException;
+import br.com.ifpe.oxefood.util.exception.NumeroNaoAceito;
+import br.com.ifpe.oxefood.util.exception.ProdutoException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -22,6 +26,10 @@ public class ClienteService {
     @Transactional
     public Cliente save(Cliente cliente) {
 
+        if (!cliente.getFoneCelular().startsWith("81")) {
+            throw new NumeroNaoAceito(NumeroNaoAceito.DDD_INVALIDO);
+        }
+
         cliente.setHabilitado(Boolean.TRUE);
         cliente.setVersao(1L);
         cliente.setDataCriacao(LocalDate.now());
@@ -35,7 +43,14 @@ public class ClienteService {
 
     public Cliente obterPorID(Long id) {
 
-        return repository.findById(id).get();
+        Optional<Cliente> consulta = repository.findById(id);
+
+        if (consulta.isPresent()) {
+            return consulta.get();
+        } else {
+            throw new EntidadeNaoEncontradaException("Cliente", id);
+        }
+
     }
 
     @Transactional
@@ -119,26 +134,21 @@ public class ClienteService {
 
     public List<Cliente> filtrar(String cpf, String nome) {
 
-       List<Cliente> listaClientes = repository.findAll();
+        List<Cliente> listaClientes = repository.findAll();
 
-       if ((cpf != null && !"".equals(cpf)) &&
-           (nome == null || "".equals(nome)))
-           {
+        if ((cpf != null && !"".equals(cpf)) &&
+                (nome == null || "".equals(nome))) {
             listaClientes = repository.consultarPorCpf(cpf);
-       } else if (
-           (cpf == null || "".equals(cpf)) &&
-           (nome != null && !"".equals(nome)))
-           {    
+        } else if ((cpf == null || "".equals(cpf)) &&
+                (nome != null && !"".equals(nome))) {
             listaClientes = repository.consultarPorNome(nome);
-       } else if (
-           (cpf != null && !"".equals(cpf)) &&
-           (nome != null && !"".equals(nome)))
-           {
-            listaClientes = repository.consultarPorNomeECpf(nome, cpf); 
-       }
+        } else if ((cpf != null && !"".equals(cpf)) &&
+                (nome != null && !"".equals(nome))) {
+            listaClientes = repository.consultarPorNomeECpf(nome, cpf);
+        }
 
-       return listaClientes;
- 
+        return listaClientes;
+
     }
 
 }
