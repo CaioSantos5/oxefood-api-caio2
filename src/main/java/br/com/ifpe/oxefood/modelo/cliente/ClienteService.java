@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.produto.Produto;
 import br.com.ifpe.oxefood.util.exception.EntidadeNaoEncontradaException;
 import br.com.ifpe.oxefood.util.exception.NumeroNaoAceito;
@@ -21,10 +22,15 @@ public class ClienteService {
     private ClienteRepository repository;
 
     @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
     private EnderecoClienteRepository enderecoClienteRepository;
 
     @Transactional
     public Cliente save(Cliente cliente) {
+
+        usuarioService.save(cliente.getUsuario());
 
         if (!cliente.getFoneCelular().startsWith("81")) {
             throw new NumeroNaoAceito(NumeroNaoAceito.DDD_INVALIDO);
