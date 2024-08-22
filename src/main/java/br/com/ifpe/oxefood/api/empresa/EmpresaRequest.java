@@ -1,12 +1,8 @@
 package br.com.ifpe.oxefood.api.empresa;
 
-import java.time.LocalDate;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.ifpe.oxefood.modelo.acesso.Usuario;
 import br.com.ifpe.oxefood.modelo.empresa.Empresa;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpresaRequest {
+
+    private String email;
+    private String password;
+    private String perfil;
 
    private String site;
 
@@ -45,6 +45,14 @@ public class EmpresaRequest {
 
            .build();
    }
+
+   public Usuario buildUsuario() {
+
+	return Usuario.builder()
+		.username(email)
+		.password(password)
+		.build();
+	}
 
 }
 

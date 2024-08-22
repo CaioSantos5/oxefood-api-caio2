@@ -15,35 +15,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ifpe.oxefood.modelo.acesso.Usuario;
+import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.empresa.Empresa;
 import br.com.ifpe.oxefood.modelo.empresa.EmpresaService;
-import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/entregador")
+@RequestMapping("api/empresa")
 @CrossOrigin
-
 public class EmpresaController {
 
     @Autowired
     private EmpresaService empresaService;
 
-        @Operation(
-       summary = "Serviço responsável por salvar um entregador no sistema.",
-       description = "Exemplo de descrição de um endpoint responsável por inserir um entregador no sistema."
-       )
+    @Autowired
+    private UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<Empresa> save(@RequestBody EmpresaRequest request) {
+    public ResponseEntity<Empresa> save(@RequestBody @Valid EmpresaRequest empresaRequest, HttpServletRequest request) {
 
-        Empresa empresa = empresaService.save(request.build());
-        return new ResponseEntity<Empresa>(empresa, HttpStatus.CREATED);
+        Empresa empresa = empresaRequest.build();
+
+        if (empresaRequest.getPerfil() != null && !"".equals(empresaRequest.getPerfil())) {
+            if (empresaRequest.getPerfil().equals("EMPRESA_USER")) {
+                empresa.getUsuario().getRoles().add(Usuario.ROLE_EMPRESA_USER);
+            } else if (empresaRequest.getPerfil().equals("EMPRESA_ADMIN")) {
+                empresa.getUsuario().getRoles().add(Usuario.ROLE_EMPRESA_ADMIN);
+            }
+        }
+
+        Empresa empresaCriada = empresaService.save(empresa, usuarioService.obterUsuarioLogado(request));
+        return new ResponseEntity<Empresa>(empresaCriada, HttpStatus.CREATED);
     }
-
-    @Operation(
-        summary = "Serviço responsável por listar os entregadores.",
-        description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema."
-        )
 
     @GetMapping
     public List<Empresa> listarTodos() {
@@ -51,35 +56,22 @@ public class EmpresaController {
     }
 
     @GetMapping("/{id}")
-    public Empresa obterPorID(@PathVariable Long id) {
-        return empresaService.obterPorID(id);
+    public Empresa obterPorId(@PathVariable Long id) {
+        return empresaService.obterPorId(id);
     }
 
-    @Operation(
-        summary = "Serviço responsável por alterar as informações dos entregadores."
-        )
+    @PutMapping
+    public ResponseEntity<Empresa> update(@PathVariable("id") Long id, @RequestBody EmpresaRequest empresaRequest,
+            HttpServletRequest request) {
 
-     @PutMapping("/{id}")
-    public ResponseEntity<Empresa> update(@PathVariable("id") Long id, @RequestBody EmpresaRequest request) {
+        empresaService.update(id, empresaRequest.build(), usuarioService.obterUsuarioLogado(request));
+        return ResponseEntity.ok().build();
+    }
 
-    empresaService.update(id, request.build());
-       return ResponseEntity.ok().build();
- }
-
-    
- @Operation(
-    summary = "Serviço responsável por deletar os dados do entregador.",
-    description = "Exemplo de descrição de um endpoint responsável por excluir um entregador."
-    )
-
-     @DeleteMapping("/{id}")
-   public ResponseEntity<Void> delete(@PathVariable Long id) {
-
-       empresaService.delete(id);
-       return ResponseEntity.ok().build();
-   }
-
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        empresaService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 
 }
-

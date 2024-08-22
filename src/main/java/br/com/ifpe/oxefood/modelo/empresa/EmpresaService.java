@@ -7,19 +7,30 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ifpe.oxefood.modelo.acesso.Usuario;
+import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
+
 @Service
 public class EmpresaService {
 
     @Autowired
     private EmpresaRepository repository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @Transactional
-    public Empresa save(Empresa empresa) {
+    public Empresa save(Empresa empresa, Usuario usuarioLogado) {
+
+        usuarioService.save(empresa.getUsuario());
 
         empresa.setHabilitado(Boolean.TRUE);
         empresa.setVersao(1L);
         empresa.setDataCriacao(LocalDate.now());
+        empresa.setCriadoPor(usuarioLogado);
+
         return repository.save(empresa);
+
     }
 
     public List<Empresa> listarTodos() {
@@ -27,38 +38,36 @@ public class EmpresaService {
         return repository.findAll();
     }
 
-    public Empresa obterPorID(Long id) {
+    public Empresa obterPorId(Long id) {
 
         return repository.findById(id).get();
     }
 
     @Transactional
-    public void update(Long id, Empresa empresaAlterado) {
-
+    public void update(Long id, Empresa empresaAlterada, Usuario usuarioLogado) {
         Empresa empresa = repository.findById(id).get();
-        empresa.setSite(empresaAlterado.getSite());
-        empresa.setCpf(empresaAlterado.getCpf());
-        empresa.setRg(empresaAlterado.getRg());
-        empresa.setDataNascimento(empresaAlterado.getDataNascimento());
-        empresa.setFoneCelular(empresaAlterado.getFoneCelular());
-        empresa.setFoneFixo(empresaAlterado.getFoneFixo());
-        empresa.setQtdEntregasRealizadas(empresaAlterado.getQtdEntregasRealizadas());
-        empresa.setValorFrete(empresaAlterado.getValorFrete());
-        empresa.setEnderecoComplemento(empresaAlterado.getEnderecoComplemento());
-        empresa.setAtivo(empresaAlterado.getAtivo());
+        empresa.setCnpj(empresaAlterada.getCnpj());
+        empresa.setSite(empresaAlterada.getSite());
+        empresa.setInscricaoEstadual(empresaAlterada.getInscricaoEstadual());
+        empresa.setNomeEmpresarial(empresaAlterada.getNomeEmpresarial());
+        empresa.setNomeFantasia(empresaAlterada.getNomeFantasia());
+        empresa.setFone(empresaAlterada.getFone());
+        empresa.setFoneAlternativo(empresaAlterada.getFoneAlternativo());
 
-        entregador.setVersao(entregador.getVersao() + 1);
-        repository.save(entregador);
+        empresa.setVersao(empresa.getVersao() + 1);
+        empresa.setDataUltimaModificacao(LocalDate.now());
+        empresa.setUltimaModificacaoPor(usuarioLogado);
+
+        repository.save(empresa);
     }
 
     @Transactional
     public void delete(Long id) {
+        Empresa empresa = repository.findById(id).get();
+        empresa.setHabilitado(Boolean.FALSE);
+        empresa.setVersao(empresa.getVersao() + 1);
 
-        Entregador entregador = repository.findById(id).get();
-        entregador.setHabilitado(Boolean.FALSE);
-        entregador.setVersao(entregador.getVersao() + 1);
-
-        repository.save(entregador);
+        repository.save(empresa);
     }
 
 }

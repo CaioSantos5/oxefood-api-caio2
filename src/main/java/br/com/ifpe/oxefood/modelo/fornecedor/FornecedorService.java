@@ -3,8 +3,6 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import br.com.ifpe.oxefood.modelo.fornecedor.Fornecedor;
 import jakarta.transaction.Transactional;
 
 @Service

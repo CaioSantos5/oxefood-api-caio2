@@ -10,14 +10,16 @@ import org.springframework.stereotype.Service;
 
 import br.com.ifpe.oxefood.modelo.acesso.Usuario;
 import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
-import br.com.ifpe.oxefood.modelo.produto.Produto;
+import br.com.ifpe.oxefood.modelo.mensagens.EmailService;
 import br.com.ifpe.oxefood.util.exception.EntidadeNaoEncontradaException;
 import br.com.ifpe.oxefood.util.exception.NumeroNaoAceito;
-import br.com.ifpe.oxefood.util.exception.ProdutoException;
 import jakarta.transaction.Transactional;
 
 @Service
 public class ClienteService {
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private ClienteRepository repository;
@@ -41,6 +43,8 @@ public class ClienteService {
         cliente.setVersao(1L);
         cliente.setDataCriacao(LocalDate.now());
         cliente.setCriadoPor(usuarioLogado);
+
+        emailService.enviarEmailConfirmacaoCadastroCliente(cliente);
 
         return repository.save(cliente);
     }
